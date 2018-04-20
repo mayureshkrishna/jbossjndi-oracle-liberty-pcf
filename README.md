@@ -45,7 +45,7 @@ Navigate to the cloned directory
 ### Now you can deploy this to Cloud Foundry 2 ways
 
 ## [Option 1: Just "cf push" your WAR file](https://github.com/mayureshkrishna/jbossjndi-oracle-liberty-pcf#option-1-just-cf-push-your-war-file-1)
-## [Option 2: "cf push" websphere/liberty SERVER directory](https://github.com/mayureshkrishna/jbossjndi-oracle-liberty-pcf#option-2-cf-push-websphereliberty-server-directory)
+## [Option 2: "cf push" websphere/liberty SERVER directory](https://github.com/mayureshkrishna/jbossjndi-oracle-liberty-pcf#option-2-cf-push-websphereliberty-server-directory-1)
 
 
 ### Option 1: Just "cf push" your WAR file
