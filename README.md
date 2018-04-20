@@ -185,7 +185,7 @@ buildpack: https://github.com/mayureshkrishna/ibm-websphere-liberty-buildpack.gi
 #0 running 2018-04-20T15:51:03Z 0.7% 171.9M of 256M 277.2M of 512M
 ``` 
 
-### Option 2: "cf push" your websphere/liberty SERVER directory
+### Option 2: "cf push" websphere/liberty SERVER directory
 
 Make sure you are at the cloned root directory
 
