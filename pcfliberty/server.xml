@@ -38,7 +38,7 @@
 	<!-- Declare the Worklight Server reports database -->
 	<dataSource jndiName="jdbc/PCF" transactional="false">
   		<jdbcDriver libraryRef="OracleLib"/>
-  		<properties.oracle driverType="thin" databaseName="${cloud.services.ORCLPCF.connection.name}" serverName="${cloud.services.ORCLPCF.connection.hostname}" portNumber="${cloud.services.ORCLPCF.connection.port}" user="${cloud.services.ORCLPCF.connection.user}" password="${cloud.services.ORCLPCF.connection.password}"/>
+  		<properties.oracle driverType="thin" databaseName="${cloud.services.PCF.connection.name}" serverName="${cloud.services.PCF.connection.host}" portNumber="${cloud.services.PCF.connection.port}" user="${cloud.services.PCF.connection.user}" password="${cloud.services.PCF.connection.password}"/>
 	</dataSource>
 
     <application id="HibernateJndi" location="HibernateJndi.war" name="HibernateJndi" type="war" context-root="HibernateJndi"/>

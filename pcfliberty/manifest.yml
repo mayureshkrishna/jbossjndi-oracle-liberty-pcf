@@ -2,3 +2,4 @@
 env:
   IBM_JVM_LICENSE: L-PMAA-A3Z8P2
   IBM_LIBERTY_LICENSE: L-CTUR-AVDTCN
+  services_autoconfig_excludes: oracle=config

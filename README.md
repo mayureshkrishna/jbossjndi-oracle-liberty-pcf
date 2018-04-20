@@ -22,8 +22,7 @@ On Windows, if you don't already have GIT Bash installed, download [GIT Bash her
 
 You can run [PCF Dev](https://pivotal.io/pcf-dev) on your local machine following instructions here: https://pivotal.io/platform/pcf-tutorials/getting-started-with-pivotal-cloud-foundry-dev/introduction
 
-### Option 1: Just "cf push" your WAR file
-
+### GET YOUR ENVIRONMENT READY
 **Login to PCF (target your CF endpoint, I'm using my PCF Dev URI):**
 ```
 cf login -a https://api.local.pcfdev.io
@@ -34,17 +33,23 @@ Make sure to use **PCF** as your instance name as JNDI will be created using tha
 ```
 cf cups PCF -p '{"uri":"oracle://admin:management@pcfdb.cizqc6uzdesg.us-east-1.rds.amazonaws.com:1521/ORCLPCF?reconnect=true"}'
 ```
-You should have something like this:
-
-```
-
-```
 
 **Clone code:**
 
 ``` 
 git clone https://github.com/mayureshkrishna/jbossjndi-oracle-liberty-pcf.git
 ```
+Navigate to the cloned directory
+
+
+### Now you can deploy this to Cloud Foundry 2 ways
+
+## [Option 1: Just "cf push" your WAR file](https://github.com/mayureshkrishna/jbossjndi-oracle-liberty-pcf#option-1-just-cf-push-your-war-file)
+## [Option 2: "cf push" websphere/liberty SERVER directory](https://github.com/mayureshkrishna/jbossjndi-oracle-liberty-pcf#option-2-cf-push-websphere-liberty-server-directory)
+
+
+### Option 1: Just "cf push" your WAR file
+
 **Package code using maven:**
 Go to your cloned code root directory and run
 ```
@@ -159,7 +164,81 @@ WLP_USER_DIR="$PWD/wlp/usr" exec .liberty/bin/server run defaultServer
 ```
 Now your App is up and running. You can run the app in your browser if you are using PCF Dev at: http://hibernatejndi.local.pcfdev.io/GetEmployeeById?empId=1
 
-You can get you URL info under ***routes*** by running:
+You can get URL info under ***routes*** by running:
+
+```
+cf app HibernateJndi
+
+Showing health and status for app **HibernateJndi** in org **pcfdev-org** / space **pcfdev-space** as **user**...
+name:  HibernateJndi
+requested state: started
+instances: 1/1
+usage: 256M x 1 instances
+routes:  hibernatejndi.local.pcfdev.io
+last uploaded: Fri 20 Apr 11:42:01 EDT 2018
+stack: cflinuxfs2
+
+buildpack: https://github.com/mayureshkrishna/ibm-websphere-liberty-buildpack.git
+
+**state** **since**  **cpu**  **memory** **disk** **details**
+
+#0 running 2018-04-20T15:51:03Z 0.7% 171.9M of 256M 277.2M of 512M
+``` 
+
+### Option 2: "cf push" your websphere/liberty SERVER directory
+
+Make sure you are at the cloned root directory
+
+```
+MK:jbossjndi-oracle-liberty-pcf mkrishna$ ls
+
+LICENSE  README.md  WebContent  manifest.yml  pcfliberty  pom.xml  src  target
+```
+You will notice there's pcfliberty directory here, which is essentially websphere/liberty server directory. There is no use of this directory in the previous option. 
+
+We will use this pre-configured server directory which has the built "WAR" file of the app as well.
+
+*P.S.: In this option you can change the **server.xml** as per your need and all you have to do is copy your packaged **"WAR"** file to **"apps"** directory under the server directory.*
+
+Let's move the manifest file from pcfliberty directory to root so that we can exclude server.xml updates via auto-configuration.
+```
+mv pcfliberty/manifest.yml .
+```
+
+If you look at manifest.yml, it has additional exclude parameter.
+```
+MK:jbossjndi-oracle-liberty-pcf mkrishna$ cat manifest.yml
+---
+env:
+  IBM_JVM_LICENSE: L-PMAA-A3Z8P2
+  IBM_LIBERTY_LICENSE: L-CTUR-AVDTCN
+  services_autoconfig_excludes: oracle=config
+```
+
+Now let's just **"cf push"** it.
+*Make sure you are running this from your cloned code root directory*
+```
+cf push -b https://github.com/mayureshkrishna/ibm-websphere-liberty-buildpack.git -p pcfliberty/ HibernateJndi
+```
+
+**Bind Service to App:**
+Bind the Oracle User Defined service which your created earlier to the app you just pushed.
+
+```
+cf bind-service HibernateJndi PCF
+```
+Make sure to restage the app so that auto configuration of JNDI picks up.
+
+```
+cf restage HibernateJndi
+```
+In the restage logs and you will notice the Autowiring:
+
+***-----> Auto-configuration is creating config for service instance 'PCF' of type 'oracle'***
+
+Now your App is up and running. You can run the app in your browser if you are using PCF Dev at: http://hibernatejndi.local.pcfdev.io/GetEmployeeById?empId=1
+
+You can get URL info under ***routes*** by running:
 
 ```
 cf app HibernateJndi
